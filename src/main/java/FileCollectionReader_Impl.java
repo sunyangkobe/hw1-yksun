@@ -51,12 +51,6 @@ public class FileCollectionReader_Impl extends CollectionReader_ImplBase {
   public static final String PARAM_INPUTFILE = "InputFile";
 
   /**
-   * Name of configuration parameter that contains the character encoding used by the input files.
-   * If not specified, the default system encoding will be used.
-   */
-  public static final String PARAM_ENCODING = "Encoding";
-
-  /**
    * Name of optional configuration parameter that contains the language of the documents in the
    * input directory. If specified this information will be added to the CAS.
    */
@@ -65,6 +59,8 @@ public class FileCollectionReader_Impl extends CollectionReader_ImplBase {
   private String mLanguage;
 
   private File f;
+
+  private boolean b = true;
 
   /**
    * @see org.apache.uima.collection.CollectionReader_ImplBase#initialize()
@@ -84,7 +80,11 @@ public class FileCollectionReader_Impl extends CollectionReader_ImplBase {
    * @see org.apache.uima.collection.CollectionReader#hasNext()
    */
   public boolean hasNext() {
-    return false;
+    if (b) {
+      b = !b;
+      return true;
+    } else
+      return b;
   }
 
   /**
@@ -102,6 +102,7 @@ public class FileCollectionReader_Impl extends CollectionReader_ImplBase {
     String text = FileUtils.file2String(f);
     // put document in CAS
     jcas.setDocumentText(text);
+    System.out.println("gethere!!");
 
     // set language if it was explicitly specified as a configuration parameter
     if (mLanguage != null) {

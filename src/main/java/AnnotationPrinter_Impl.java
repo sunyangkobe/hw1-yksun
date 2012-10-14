@@ -4,7 +4,7 @@ import org.apache.uima.collection.base_cpm.CasObjectProcessor;
 import org.apache.uima.resource.ResourceProcessException;
 
 
-public class AnnotationPrinter extends CasConsumer_ImplBase implements CasObjectProcessor {
+public class AnnotationPrinter_Impl extends CasConsumer_ImplBase implements CasObjectProcessor {
 
   @Override
   public void processCas(CAS aCAS) throws ResourceProcessException {

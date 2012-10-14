@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <casConsumerDescription xmlns="http://uima.apache.org/resourceSpecifier">
   <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
-  <implementationName>AnnotationPrinter</implementationName>
+  <implementationName>AnnotationPrinter_Impl</implementationName>
   <processingResourceMetaData>
     <name>Annotation Printer</name>
     <description>Prints annotations.</description>
@@ -24,8 +24,7 @@
         </value>
       </nameValuePair>
     </configurationParameterSettings>
-    <typeSystemDescription>
-    </typeSystemDescription>
+    <typeSystemDescription/>
     <capabilities>
       <capability>
         <inputs/>
