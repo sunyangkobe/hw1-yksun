@@ -3,18 +3,18 @@
 	<collectionReader>
 		<collectionIterator>
 			<descriptor>
-				<include href="FSCollectionReader.xml" />
+				<import location="descriptors/collection_reader/FileCollectionReader.xml" />
 			</descriptor>
 		</collectionIterator>
 	</collectionReader>
+
+	<!-- casPoolSize >= processingUnitThreadCount; performance settings -->
 	<casProcessors dropCasOnException="true" casPoolSize="1"
 		processingUnitThreadCount="1">
 		<casProcessor deployment="integrated"
 			name="Aggregate TAE - Name Recognizer and Person Title Annotator">
 			<descriptor>
-				<include
-					href="C:/Program Files/apache-uima/examples/descriptors/
-      analysis_engine/NamesAndPersonTitles_TAE.xml" />
+				<import location="descriptors/analysis_engine/PosTagName_TAE.xml" />
 			</descriptor>
 			<deploymentParameters />
 			<filter />
@@ -24,13 +24,11 @@
 					value="30" />
 				<timeout max="100000" />
 			</errorHandling>
-			<checkpoint batch="1" />
+			<checkpoint batch="10000" />
 		</casProcessor>
 		<casProcessor deployment="integrated" name="Annotation Printer">
 			<descriptor>
-				<include
-					href="C:/Program Files/apache-uima/examples/descriptors/
-      cas_consumer/AnnotationPrinter.xml" />
+				<import location="descriptors/cas_consumer/AnnotationPrinter.xml" />
 			</descriptor>
 			<deploymentParameters />
 			<filter />
@@ -46,7 +44,7 @@
 	<cpeConfig>
 		<numToProcess>1</numToProcess>
 		<deployAs>immediate</deployAs>
-		<checkpoint file="" time="3000" />
+		<checkpoint file="" time="300000" />
 		<timerImpl />
 	</cpeConfig>
 </cpeDescription>

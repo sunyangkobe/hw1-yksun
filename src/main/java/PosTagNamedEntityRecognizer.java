@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
+import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
+import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import edu.stanford.nlp.ling.CoreAnnotations.PartOfSpeechAnnotation;
@@ -14,7 +17,7 @@ import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.util.CoreMap;
 
-public class PosTagNamedEntityRecognizer {
+public class PosTagNamedEntityRecognizer extends JCasAnnotator_ImplBase {
 
   private StanfordCoreNLP pipeline;
 
@@ -50,5 +53,13 @@ public class PosTagNamedEntityRecognizer {
       }
     }
     return begin2end;
+  }
+
+  @Override
+  public void process(JCas aJCas) throws AnalysisEngineProcessException {
+    final Map<Integer, Integer> fullmap = getGeneSpans(aJCas.getDocumentText());
+    for (int i : fullmap.keySet()) {
+      System.out.println("key: " + i);
+    }
   }
 }
