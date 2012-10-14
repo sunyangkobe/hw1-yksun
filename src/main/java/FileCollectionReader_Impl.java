@@ -18,7 +18,9 @@
  */
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 
 import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
@@ -50,24 +52,13 @@ public class FileCollectionReader_Impl extends CollectionReader_ImplBase {
    */
   public static final String PARAM_INPUTFILE = "InputFile";
 
-  /**
-   * Name of optional configuration parameter that contains the language of the documents in the
-   * input directory. If specified this information will be added to the CAS.
-   */
-  public static final String PARAM_LANGUAGE = "Language";
-
-  private String mLanguage;
-
-  private File f;
-
-  private boolean b = true;
+  private Reader reader;
 
   /**
    * @see org.apache.uima.collection.CollectionReader_ImplBase#initialize()
    */
   public void initialize() throws ResourceInitializationException {
-    f = new File(((String) getConfigParameterValue(PARAM_INPUTFILE)).trim());
-    mLanguage = (String) getConfigParameterValue(PARAM_LANGUAGE);
+    reader = new FileReader(((String) getConfigParameterValue(PARAM_INPUTFILE)).trim());
 
     // if input directory does not exist or is not a directory, throw exception
     if (!f.exists() || f.isDirectory()) {

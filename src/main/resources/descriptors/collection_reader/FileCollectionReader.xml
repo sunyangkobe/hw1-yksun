@@ -15,25 +15,12 @@
         <multiValued>false</multiValued>
         <mandatory>true</mandatory>
       </configurationParameter>
-      <configurationParameter>
-        <name>Language</name>
-        <description>ISO language code for the documents</description>
-        <type>String</type>
-        <multiValued>false</multiValued>
-        <mandatory>false</mandatory>
-      </configurationParameter>
     </configurationParameters>
     <configurationParameterSettings>
       <nameValuePair>
         <name>InputFile</name>
         <value>
           <string>src/main/resources/data/sample.in</string>
-        </value>
-      </nameValuePair>
-      <nameValuePair>
-        <name>Language</name>
-        <value>
-          <string>en</string>
         </value>
       </nameValuePair>
     </configurationParameterSettings>
