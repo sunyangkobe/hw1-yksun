@@ -60,11 +60,11 @@ public class FileCollectionReader_Impl extends CollectionReader_ImplBase {
   public void initialize() throws ResourceInitializationException {
     reader = new FileReader(((String) getConfigParameterValue(PARAM_INPUTFILE)).trim());
 
-    // if input directory does not exist or is not a directory, throw exception
-    if (!f.exists() || f.isDirectory()) {
-      throw new ResourceInitializationException(ResourceConfigurationException.DIRECTORY_NOT_FOUND,
-              new Object[] { PARAM_INPUTFILE, this.getMetaData().getName(), f.getPath() });
-    }
+//    // if input directory does not exist or is not a directory, throw exception
+//    if (!f.exists() || f.isDirectory()) {
+//      throw new ResourceInitializationException(ResourceConfigurationException.DIRECTORY_NOT_FOUND,
+//              new Object[] { PARAM_INPUTFILE, this.getMetaData().getName(), f.getPath() });
+//    }
   }
 
   /**
