@@ -44,7 +44,7 @@
       <nameValuePair>
         <name>Threshold</name>
         <value>
-          <float>0.65</float>
+          <float>0.62</float>
         </value>
       </nameValuePair>
     </configurationParameterSettings>

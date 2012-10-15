@@ -109,6 +109,13 @@ public class PosTagNamedEntityRecognizer extends JCasAnnotator_ImplBase {
     return numSpaces;
   }
 
+  private boolean isComplete(String text) {
+    int left = text.indexOf("(");
+    int right = text.indexOf(")");
+
+    return (left != -1 && right > left) || (left == -1 && right == -1);
+  }
+
   /**
    * Produce the Gene Information according to recognizer's confidence.
    * 
@@ -121,7 +128,8 @@ public class PosTagNamedEntityRecognizer extends JCasAnnotator_ImplBase {
     while (iter.hasNext()) {
       Chunk chunk = iter.next();
       double conf = Math.pow(2.0, chunk.score());
-      if (conf > threshold) {
+      String gene = model.getSentence().substring(chunk.start(), chunk.end());
+      if (conf > threshold && gene.length() > 1 && isComplete(gene)) {
         ProcessedModel outputModel = new ProcessedModel(jcas);
         final ArrayList<Integer> spaceList = getSpaceSpans(model.getSentence());
         int numBeginSpaces = getNumSpaces(chunk.start(), spaceList);
@@ -130,8 +138,7 @@ public class PosTagNamedEntityRecognizer extends JCasAnnotator_ImplBase {
         outputModel.setId(model.getId());
         outputModel.setBegin(chunk.start() - numBeginSpaces);
         outputModel.setEnd(chunk.end() - 1 - numEndSpaces);
-        outputModel.setGene(model.getSentence().substring(outputModel.getBegin() + numBeginSpaces,
-                outputModel.getEnd() + numEndSpaces + 1));
+        outputModel.setGene(gene);
         outputModel.setConf(conf);
         outputModel.addToIndexes();
       }
