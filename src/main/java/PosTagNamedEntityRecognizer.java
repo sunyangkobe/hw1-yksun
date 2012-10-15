@@ -109,6 +109,13 @@ public class PosTagNamedEntityRecognizer extends JCasAnnotator_ImplBase {
     return numSpaces;
   }
 
+  /**
+   * Determine if the input text is a complete gene mention
+   * 
+   * @param text
+   *          String that will be processed in this method.
+   * @return the boolean that indicates the true/false value.
+   */
   private boolean isComplete(String text) {
     int left = text.indexOf("(");
     int right = text.indexOf(")");
