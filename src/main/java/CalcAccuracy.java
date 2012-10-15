@@ -5,6 +5,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+/**
+ * Internal Use for measuring the correctness
+ * 
+ * @author Yang Sun
+ * 
+ */
 public class CalcAccuracy {
 
   public CalcAccuracy(String args[]) {

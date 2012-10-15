@@ -14,13 +14,21 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.resource.ResourceProcessException;
 import org.apache.uima.util.ProcessTrace;
 
+/**
+ * Annotation Printer
+ * 
+ * @author Yang Sun <yksun@cs.cmu.edu>
+ * 
+ */
 public class AnnotationPrinter_Impl extends CasConsumer_ImplBase implements CasObjectProcessor {
-  File outFile;
+  /**
+   * Name of configuration parameter that must be set to the path of the output file.
+   */
+  public static final String PARAM_OUTPUTFILE = "OutputFile";
 
-  FileWriter fileWriter;
+  private File outFile;
 
-  public AnnotationPrinter_Impl() {
-  }
+  private FileWriter fileWriter;
 
   /**
    * Initializes this CAS Consumer with the parameters specified in the descriptor.
@@ -31,12 +39,13 @@ public class AnnotationPrinter_Impl extends CasConsumer_ImplBase implements CasO
   public void initialize() throws ResourceInitializationException {
 
     // extract configuration parameter settings
-    String oPath = (String) getUimaContext().getConfigParameterValue("OutputFile");
+    String oPath = (String) getUimaContext().getConfigParameterValue(PARAM_OUTPUTFILE);
 
     // Output file should be specified in the descriptor
     if (oPath == null) {
       throw new ResourceInitializationException(
-              ResourceInitializationException.CONFIG_SETTING_ABSENT, new Object[] { "OutputFile" });
+              ResourceInitializationException.CONFIG_SETTING_ABSENT,
+              new Object[] { PARAM_OUTPUTFILE });
     }
     // If specified output directory does not exist, try to create it
     outFile = new File(oPath.trim());
@@ -44,7 +53,7 @@ public class AnnotationPrinter_Impl extends CasConsumer_ImplBase implements CasO
       if (!outFile.getParentFile().mkdirs())
         throw new ResourceInitializationException(
                 ResourceInitializationException.RESOURCE_DATA_NOT_VALID, new Object[] { oPath,
-                    "outputFile" });
+                    PARAM_OUTPUTFILE });
     }
     try {
       fileWriter = new FileWriter(outFile);
@@ -53,6 +62,14 @@ public class AnnotationPrinter_Impl extends CasConsumer_ImplBase implements CasO
     }
   }
 
+  /**
+   * Process the CAS passed from Collection Reader. <br>
+   * 
+   * @throws ResourceProcessException
+   *           if the process reports CASException or IOException
+   * 
+   * @see org.apache.uima.collection.base_cpm.CasObjectProcessor#processCas(org.apache.uima.cas.CAS[])
+   */
   @Override
   public synchronized void processCas(CAS aCAS) throws ResourceProcessException {
     JCas jcas;
@@ -105,7 +122,7 @@ public class AnnotationPrinter_Impl extends CasConsumer_ImplBase implements CasO
   public void reconfigure() throws ResourceConfigurationException {
     super.reconfigure();
     // extract configuration parameter settings
-    String oPath = (String) getUimaContext().getConfigParameterValue("OutputFile");
+    String oPath = (String) getUimaContext().getConfigParameterValue(PARAM_OUTPUTFILE);
     File oFile = new File(oPath.trim());
     // if output file has changed, close exiting file and open new
     if (!oFile.equals(this.outFile)) {
@@ -118,7 +135,7 @@ public class AnnotationPrinter_Impl extends CasConsumer_ImplBase implements CasO
           if (!oFile.getParentFile().mkdirs())
             throw new ResourceConfigurationException(
                     ResourceInitializationException.RESOURCE_DATA_NOT_VALID, new Object[] { oPath,
-                        "OutputFile" });
+                        PARAM_OUTPUTFILE });
         }
         fileWriter = new FileWriter(oFile);
       } catch (IOException e) {

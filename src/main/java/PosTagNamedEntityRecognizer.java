@@ -2,7 +2,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Properties;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
@@ -14,21 +13,45 @@ import com.aliasi.chunk.Chunk;
 import com.aliasi.chunk.ConfidenceChunker;
 import com.aliasi.util.AbstractExternalizable;
 
+/**
+ * Position, TagName Annotator
+ * 
+ * @author Yang Sun <yksun@cs.cmu.edu>
+ * 
+ */
 public class PosTagNamedEntityRecognizer extends JCasAnnotator_ImplBase {
+  /**
+   * Name of configuration parameter that must be set to the path of the model file.
+   */
+  public static final String PARAM_MODELFILE = "ModelFile";
+
+  /**
+   * Name of configuration parameter that must be set to the Maximum N Best Chunks.
+   */
+  public static final String PARAM_MAXN = "MAX_N_BEST_CHUNKS";
+
+  /**
+   * Name of configuration parameter that must be set to the Confidence Acceptance Level.
+   */
+  public static final String PARAM_CONFIDENCE = "Confidence";
 
   private ConfidenceChunker chunker;
 
   private JCas jcas;
 
-  public PosTagNamedEntityRecognizer() {
-  }
+  private int maxN;
 
+  private double conf_tar;
+
+  /**
+   * @see org.apache.uima.AnalysisComponent.AnalysisComponent#initialize(org.apache.uima.AnalysisComponent.AnalysisComponentContext)
+   */
   @Override
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
     try {
-      String modelPath = (String) aContext.getConfigParameterValue("ModelFile");
-      Properties props = new Properties();
-      props.put("annotators", "tokenize, ssplit, pos");
+      String modelPath = (String) aContext.getConfigParameterValue(PARAM_MODELFILE);
+      maxN = (Integer) aContext.getConfigParameterValue(PARAM_MAXN);
+      conf_tar = (Float) aContext.getConfigParameterValue(PARAM_CONFIDENCE);
       chunker = (ConfidenceChunker) AbstractExternalizable.readObject(new File(modelPath));
     } catch (IOException e) {
       throw new ResourceInitializationException();
@@ -37,6 +60,27 @@ public class PosTagNamedEntityRecognizer extends JCasAnnotator_ImplBase {
     }
   }
 
+  /**
+   * @see org.apache.uima.analysis_component.AnalysisComponent#process(org.apache.uima.core.AbstractCas)
+   */
+  @Override
+  public void process(JCas aJCas) throws AnalysisEngineProcessException {
+    jcas = aJCas;
+    Iterator<org.apache.uima.jcas.tcas.Annotation> model_iter = aJCas.getAnnotationIndex(
+            SourceModel.type).iterator();
+    while (model_iter.hasNext()) {
+      produceGeneSpans((SourceModel) model_iter.next());
+    }
+
+  }
+
+  /**
+   * Get all the indices of whitespace in the text
+   * 
+   * @param text
+   *          String object that will be processed in this method.
+   * @return the ArrayList<Integer> object that contains the indices of whitespace in the text.
+   */
   private ArrayList<Integer> getSpaceSpans(String text) {
     ArrayList<Integer> spaceList = new ArrayList<Integer>();
     int i = 0;
@@ -45,6 +89,15 @@ public class PosTagNamedEntityRecognizer extends JCasAnnotator_ImplBase {
     return spaceList;
   }
 
+  /**
+   * Get the number of whitespace before the target index position.
+   * 
+   * @param position
+   *          int that will be treated as the target index.
+   * @param spaceList
+   *          ArrayList<Integer> object that will be used as the source.
+   * @return the int that indicates the number of whitespace before the target index.
+   */
   private int getNumSpaces(int position, ArrayList<Integer> spaceList) {
     int numSpaces = 0;
     for (Integer e : spaceList) {
@@ -56,13 +109,19 @@ public class PosTagNamedEntityRecognizer extends JCasAnnotator_ImplBase {
     return numSpaces;
   }
 
-  private void getGeneSpans(SourceModel model) {
+  /**
+   * Produce the Gene Information according to recognizer's confidence.
+   * 
+   * @param model
+   *          SourceModel object that will be served as data source and processed in this method.
+   */
+  private void produceGeneSpans(SourceModel model) {
     char[] cs = model.getSentence().toCharArray();
-    Iterator<Chunk> iter = chunker.nBestChunks(cs, 0, cs.length, 100);
+    Iterator<Chunk> iter = chunker.nBestChunks(cs, 0, cs.length, maxN);
     while (iter.hasNext()) {
       Chunk chunk = iter.next();
       double conf = Math.pow(2.0, chunk.score());
-      if (conf > 0.65) {
+      if (conf > conf_tar) {
         ProcessedModel outputModel = new ProcessedModel(jcas);
         final ArrayList<Integer> spaceList = getSpaceSpans(model.getSentence());
         int numBeginSpaces = getNumSpaces(chunk.start(), spaceList);
@@ -77,16 +136,5 @@ public class PosTagNamedEntityRecognizer extends JCasAnnotator_ImplBase {
         outputModel.addToIndexes();
       }
     }
-  }
-
-  @Override
-  public void process(JCas aJCas) throws AnalysisEngineProcessException {
-    jcas = aJCas;
-    Iterator<org.apache.uima.jcas.tcas.Annotation> model_iter = aJCas.getAnnotationIndex(
-            SourceModel.type).iterator();
-    while (model_iter.hasNext()) {
-      getGeneSpans((SourceModel) model_iter.next());
-    }
-
   }
 }

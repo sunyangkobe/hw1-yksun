@@ -12,7 +12,7 @@
 	<casProcessors dropCasOnException="true" casPoolSize="2"
 		processingUnitThreadCount="1">
 		<casProcessor deployment="integrated"
-			name="Aggregate TAE - Name Recognizer and Person Title Annotator">
+			name="Position, TagName Annotator">
 			<descriptor>
 				<import location="descriptors/analysis_engine/PosTagName_TAE.xml" />
 			</descriptor>

@@ -11,10 +11,15 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Progress;
 
+/**
+ * File Collection Reader
+ * 
+ * @author Yang Sun <yksun@cs.cmu.edu>
+ * 
+ */
 public class FileCollectionReader_Impl extends CollectionReader_ImplBase {
   /**
-   * Name of configuration parameter that must be set to the path of a directory containing input
-   * files.
+   * Name of configuration parameter that must be set to the path of the input file.
    */
   public static final String PARAM_INPUTFILE = "InputFile";
 
@@ -68,7 +73,6 @@ public class FileCollectionReader_Impl extends CollectionReader_ImplBase {
    * @see org.apache.uima.collection.base_cpm.BaseCollectionReader#getProgress()
    */
   public Progress[] getProgress() {
-    // return new Progress[] { new ProgressImpl(1, 15000, Progress.ENTITIES) };
     return null;
   }
 

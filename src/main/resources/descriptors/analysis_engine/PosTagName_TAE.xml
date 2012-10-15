@@ -5,13 +5,25 @@
   <annotatorImplementationName>PosTagNamedEntityRecognizer</annotatorImplementationName>
   <analysisEngineMetaData>
     <name>Position TagName Annotator</name>
-    <description>Annotates tokens and sentences.</description>
+    <description>Read SourceModel Annotation and produce ProcessedModel Annotation, representing the Gene Tag, Start Position, End Position, Gene Name and confidence level</description>
     <version>1.0</version>
-    <vendor>The Apache Software Foundation</vendor>
+    <vendor>Yang Sun &lt;yksun@cs.cmu.edu&gt;</vendor>
     <configurationParameters>
       <configurationParameter>
         <name>ModelFile</name>
         <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>MAX_N_BEST_CHUNKS</name>
+        <type>Integer</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+      <configurationParameter>
+        <name>Confidence</name>
+        <type>Float</type>
         <multiValued>false</multiValued>
         <mandatory>false</mandatory>
       </configurationParameter>
@@ -21,6 +33,18 @@
         <name>ModelFile</name>
         <value>
           <string>src/main/resources/models/ne-en-bio-genetag.HmmChunker</string>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>MAX_N_BEST_CHUNKS</name>
+        <value>
+          <integer>100</integer>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>Confidence</name>
+        <value>
+          <float>0.65</float>
         </value>
       </nameValuePair>
     </configurationParameterSettings>
