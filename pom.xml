@@ -111,7 +111,7 @@
     </dependency>
   </dependencies>
   <scm>
-  	<connection>scm:git:git@github.com:sunyangkobe/hw0-yksun.git</connection>
-  	<developerConnection>scm:git:git@github.com:sunyangkobe/hw0-yksun.git</developerConnection>
+  	<connection>scm:git:git@github.com:sunyangkobe/hw1-yksun.git</connection>
+  	<developerConnection>scm:git:git@github.com:sunyangkobe/hw1-yksun.git</developerConnection>
   </scm>
 </project>

@@ -9,10 +9,10 @@
 	</collectionReader>
 
 	<!-- casPoolSize >= processingUnitThreadCount; performance settings -->
-	<casProcessors dropCasOnException="true" casPoolSize="1"
+	<casProcessors dropCasOnException="true" casPoolSize="2"
 		processingUnitThreadCount="1">
 		<casProcessor deployment="integrated"
-			name="Aggregate TAE - Name Recognizer and Person Title Annotator">
+			name="Position, TagName Annotator">
 			<descriptor>
 				<import location="descriptors/analysis_engine/PosTagName_TAE.xml" />
 			</descriptor>
@@ -36,13 +36,13 @@
 				<errorRateThreshold action="terminate" value="100/1000" />
 				<maxConsecutiveRestarts action="terminate"
 					value="30" />
-				<timeout max="100000" />
+				<timeout max="10000" />
 			</errorHandling>
-			<checkpoint batch="1" />
+			<checkpoint batch="10000" />
 		</casProcessor>
 	</casProcessors>
 	<cpeConfig>
-		<numToProcess>1</numToProcess>
+		<numToProcess>-1</numToProcess>
 		<deployAs>immediate</deployAs>
 		<checkpoint file="" time="300000" />
 		<timerImpl />
