@@ -8,8 +8,22 @@
     <description>Annotates tokens and sentences.</description>
     <version>1.0</version>
     <vendor>The Apache Software Foundation</vendor>
-    <configurationParameters/>
-    <configurationParameterSettings/>
+    <configurationParameters>
+      <configurationParameter>
+        <name>ModelFile</name>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+    </configurationParameters>
+    <configurationParameterSettings>
+      <nameValuePair>
+        <name>ModelFile</name>
+        <value>
+          <string>src/main/resources/models/ne-en-bio-genetag.HmmChunker</string>
+        </value>
+      </nameValuePair>
+    </configurationParameterSettings>
     <typeSystemDescription>
       <imports>
         <import name="descriptors.type_system.ProcessedModel"/>

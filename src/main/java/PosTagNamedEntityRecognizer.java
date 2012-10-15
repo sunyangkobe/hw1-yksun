@@ -1,29 +1,40 @@
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Properties;
 
+import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
-import edu.stanford.nlp.ling.CoreAnnotations.PartOfSpeechAnnotation;
-import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
-import edu.stanford.nlp.ling.CoreLabel;
-import edu.stanford.nlp.pipeline.Annotation;
-import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+import com.aliasi.chunk.Chunk;
+import com.aliasi.chunk.ConfidenceChunker;
+import com.aliasi.util.AbstractExternalizable;
 
 public class PosTagNamedEntityRecognizer extends JCasAnnotator_ImplBase {
 
-  private StanfordCoreNLP pipeline;
+  private ConfidenceChunker chunker;
 
   private JCas jcas;
 
-  public PosTagNamedEntityRecognizer() throws ResourceInitializationException {
-    Properties props = new Properties();
-    props.put("annotators", "tokenize, ssplit, pos");
-    pipeline = new StanfordCoreNLP(props);
+  public PosTagNamedEntityRecognizer() {
+  }
+
+  @Override
+  public void initialize(UimaContext aContext) throws ResourceInitializationException {
+    try {
+      String modelPath = (String) aContext.getConfigParameterValue("ModelFile");
+      Properties props = new Properties();
+      props.put("annotators", "tokenize, ssplit, pos");
+      chunker = (ConfidenceChunker) AbstractExternalizable.readObject(new File(modelPath));
+    } catch (IOException e) {
+      throw new ResourceInitializationException();
+    } catch (ClassNotFoundException e) {
+      throw new ResourceInitializationException();
+    }
   }
 
   private ArrayList<Integer> getSpaceSpans(String text) {
@@ -45,40 +56,45 @@ public class PosTagNamedEntityRecognizer extends JCasAnnotator_ImplBase {
     return numSpaces;
   }
 
-  private void getGeneSpans(SourceModel model, ArrayList<Integer> spaceList) {
-    Annotation sentence = new Annotation(model.getSentence());
-    pipeline.annotate(sentence);
-    List<CoreLabel> candidate = new ArrayList<CoreLabel>();
-    for (CoreLabel token : sentence.get(TokensAnnotation.class)) {
-      String pos = token.get(PartOfSpeechAnnotation.class);
-      if (pos.startsWith("NN")) {
-        candidate.add(token);
-      } else if (candidate.size() > 0) {
-        int numBeginSpaces = getNumSpaces(candidate.get(0).beginPosition(), spaceList);
-        int numEndSpaces = getNumSpaces(candidate.get(candidate.size() - 1).endPosition(),
-                spaceList);
+  private void getGeneSpans(SourceModel model) {
+    // Chunking chunking = chunker.chunk(model.getSentence());
+    char[] cs = model.getSentence().toCharArray();
+    Iterator<Chunk> iter = chunker.nBestChunks(cs, 0, cs.length, 100);
+    // System.out.println("Chunking=" + chunking);
+    while (iter.hasNext()) {
+      Chunk chunk = iter.next();
+      double conf = Math.pow(2.0, chunk.score());
+      if (conf > 0.6) {
         ProcessedModel outputModel = new ProcessedModel(jcas);
+        final ArrayList<Integer> spaceList = getSpaceSpans(model.getSentence());
+        int numBeginSpaces = getNumSpaces(chunk.start(), spaceList);
+        int numEndSpaces = getNumSpaces(chunk.end(), spaceList);
+
         outputModel.setId(model.getId());
-        outputModel.setBegin(candidate.get(0).beginPosition() - numBeginSpaces);
-        outputModel.setEnd(candidate.get(candidate.size() - 1).endPosition() - 1 - numEndSpaces);
+        outputModel.setBegin(chunk.start() - numBeginSpaces);
+        outputModel.setEnd(chunk.end() - 1 - numEndSpaces);
         outputModel.setGene(model.getSentence().substring(outputModel.getBegin() + numBeginSpaces,
                 outputModel.getEnd() + numEndSpaces + 1));
         outputModel.addToIndexes();
-        candidate.clear();
       }
     }
-    if (candidate.size() > 0) {
-      int numBeginSpaces = getNumSpaces(candidate.get(0).beginPosition(), spaceList);
-      int numEndSpaces = getNumSpaces(candidate.get(candidate.size() - 1).endPosition(), spaceList);
-      ProcessedModel outputModel = new ProcessedModel(jcas);
-      outputModel.setId(model.getId());
-      outputModel.setBegin(candidate.get(0).beginPosition() - numBeginSpaces);
-      outputModel.setEnd(candidate.get(candidate.size() - 1).endPosition() - 1 - numEndSpaces);
-      outputModel.setGene(model.getSentence().substring(outputModel.getBegin() + numBeginSpaces,
-              outputModel.getEnd() + numEndSpaces + 1));
-      outputModel.addToIndexes();
-      candidate.clear();
-    }
+    // Annotation sentence = new Annotation(model.getSentence());
+    // pipeline.annotate(sentence);
+    // List<CoreLabel> candidate = new ArrayList<CoreLabel>();
+    // Anno
+    // for (CoreLabel token : sentence.get(TokensAnnotation.class)) {
+    // String pos = token.get(PartOfSpeechAnnotation.class);
+    // if (pos.startsWith("NN")) {
+    // candidate.add(token);
+    // } else if (candidate.size() > 0) {
+    // addAnnotation(candidate, model);
+    // candidate.clear();
+    // }
+    // }
+    // if (candidate.size() > 0) {
+    // addAnnotation(candidate, model);
+    // candidate.clear();
+    // }
   }
 
   @Override
@@ -87,9 +103,7 @@ public class PosTagNamedEntityRecognizer extends JCasAnnotator_ImplBase {
     Iterator<org.apache.uima.jcas.tcas.Annotation> model_iter = aJCas.getAnnotationIndex(
             SourceModel.type).iterator();
     while (model_iter.hasNext()) {
-      SourceModel model = (SourceModel) model_iter.next();
-      final ArrayList<Integer> spaceList = getSpaceSpans(model.getSentence());
-      getGeneSpans(model, spaceList);
+      getGeneSpans((SourceModel) model_iter.next());
     }
 
   }
