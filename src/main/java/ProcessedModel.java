@@ -7,7 +7,7 @@ import org.apache.uima.jcas.cas.TOP_Type;
 import org.apache.uima.jcas.tcas.Annotation;
 
 /**
- * Updated by JCasGen Sun Oct 14 21:56:40 EDT 2012 XML source:
+ * Updated by JCasGen Mon Oct 15 01:20:21 EDT 2012 XML source:
  * C:/Users/KOBE/workspace/hw1-yksun/src/main/resources/descriptors/type_system/ProcessedModel.xml
  * 
  * @generated
@@ -120,6 +120,32 @@ public class ProcessedModel extends Annotation {
     if (ProcessedModel_Type.featOkTst && ((ProcessedModel_Type) jcasType).casFeat_gene == null)
       jcasType.jcas.throwFeatMissing("gene", "ProcessedModel");
     jcasType.ll_cas.ll_setStringValue(addr, ((ProcessedModel_Type) jcasType).casFeatCode_gene, v);
+  }
+
+  // *--------------*
+  // * Feature: conf
+
+  /**
+   * getter for conf - gets
+   * 
+   * @generated
+   */
+  public double getConf() {
+    if (ProcessedModel_Type.featOkTst && ((ProcessedModel_Type) jcasType).casFeat_conf == null)
+      jcasType.jcas.throwFeatMissing("conf", "ProcessedModel");
+    return jcasType.ll_cas.ll_getDoubleValue(addr,
+            ((ProcessedModel_Type) jcasType).casFeatCode_conf);
+  }
+
+  /**
+   * setter for conf - sets
+   * 
+   * @generated
+   */
+  public void setConf(double v) {
+    if (ProcessedModel_Type.featOkTst && ((ProcessedModel_Type) jcasType).casFeat_conf == null)
+      jcasType.jcas.throwFeatMissing("conf", "ProcessedModel");
+    jcasType.ll_cas.ll_setDoubleValue(addr, ((ProcessedModel_Type) jcasType).casFeatCode_conf, v);
   }
 
   @Override

@@ -12,7 +12,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /**
- * Updated by JCasGen Sun Oct 14 21:56:40 EDT 2012
+ * Updated by JCasGen Mon Oct 15 01:20:21 EDT 2012
  * 
  * @generated
  */
@@ -89,6 +89,26 @@ public class ProcessedModel_Type extends Annotation_Type {
     ll_cas.ll_setStringValue(addr, casFeatCode_gene, v);
   }
 
+  /** @generated */
+  final Feature casFeat_conf;
+
+  /** @generated */
+  final int casFeatCode_conf;
+
+  /** @generated */
+  public double getConf(int addr) {
+    if (featOkTst && casFeat_conf == null)
+      jcas.throwFeatMissing("conf", "ProcessedModel");
+    return ll_cas.ll_getDoubleValue(addr, casFeatCode_conf);
+  }
+
+  /** @generated */
+  public void setConf(int addr, double v) {
+    if (featOkTst && casFeat_conf == null)
+      jcas.throwFeatMissing("conf", "ProcessedModel");
+    ll_cas.ll_setDoubleValue(addr, casFeatCode_conf, v);
+  }
+
   /**
    * initialize variables to correspond with Cas Type and Features
    * 
@@ -105,6 +125,10 @@ public class ProcessedModel_Type extends Annotation_Type {
     casFeat_gene = jcas.getRequiredFeatureDE(casType, "gene", "uima.cas.String", featOkTst);
     casFeatCode_gene = (null == casFeat_gene) ? JCas.INVALID_FEATURE_CODE
             : ((FeatureImpl) casFeat_gene).getCode();
+
+    casFeat_conf = jcas.getRequiredFeatureDE(casType, "conf", "uima.cas.Double", featOkTst);
+    casFeatCode_conf = (null == casFeat_conf) ? JCas.INVALID_FEATURE_CODE
+            : ((FeatureImpl) casFeat_conf).getCode();
 
   }
 }

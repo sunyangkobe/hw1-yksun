@@ -57,14 +57,12 @@ public class PosTagNamedEntityRecognizer extends JCasAnnotator_ImplBase {
   }
 
   private void getGeneSpans(SourceModel model) {
-    // Chunking chunking = chunker.chunk(model.getSentence());
     char[] cs = model.getSentence().toCharArray();
     Iterator<Chunk> iter = chunker.nBestChunks(cs, 0, cs.length, 100);
-    // System.out.println("Chunking=" + chunking);
     while (iter.hasNext()) {
       Chunk chunk = iter.next();
       double conf = Math.pow(2.0, chunk.score());
-      if (conf > 0.6) {
+      if (conf > 0.65) {
         ProcessedModel outputModel = new ProcessedModel(jcas);
         final ArrayList<Integer> spaceList = getSpaceSpans(model.getSentence());
         int numBeginSpaces = getNumSpaces(chunk.start(), spaceList);
@@ -75,26 +73,10 @@ public class PosTagNamedEntityRecognizer extends JCasAnnotator_ImplBase {
         outputModel.setEnd(chunk.end() - 1 - numEndSpaces);
         outputModel.setGene(model.getSentence().substring(outputModel.getBegin() + numBeginSpaces,
                 outputModel.getEnd() + numEndSpaces + 1));
+        outputModel.setConf(conf);
         outputModel.addToIndexes();
       }
     }
-    // Annotation sentence = new Annotation(model.getSentence());
-    // pipeline.annotate(sentence);
-    // List<CoreLabel> candidate = new ArrayList<CoreLabel>();
-    // Anno
-    // for (CoreLabel token : sentence.get(TokensAnnotation.class)) {
-    // String pos = token.get(PartOfSpeechAnnotation.class);
-    // if (pos.startsWith("NN")) {
-    // candidate.add(token);
-    // } else if (candidate.size() > 0) {
-    // addAnnotation(candidate, model);
-    // candidate.clear();
-    // }
-    // }
-    // if (candidate.size() > 0) {
-    // addAnnotation(candidate, model);
-    // candidate.clear();
-    // }
   }
 
   @Override
