@@ -9,7 +9,7 @@
     <vendor>The Apache Software Foundation</vendor>
     <configurationParameters>
       <configurationParameter>
-        <name>outputFile</name>
+        <name>OutputFile</name>
         <description>File to which annotations will be printed</description>
         <type>String</type>
         <multiValued>false</multiValued>
@@ -18,9 +18,9 @@
     </configurationParameters>
     <configurationParameterSettings>
       <nameValuePair>
-        <name>outputFile</name>
+        <name>OutputFile</name>
         <value>
-          <string>temp-uima-output/annotprint/annotations.txt</string>
+          <string>src/main/resources/data/kobe.out</string>
         </value>
       </nameValuePair>
     </configurationParameterSettings>

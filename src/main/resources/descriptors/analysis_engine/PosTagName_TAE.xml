@@ -10,13 +10,19 @@
     <vendor>The Apache Software Foundation</vendor>
     <configurationParameters/>
     <configurationParameterSettings/>
-    <typeSystemDescription/>
+    <typeSystemDescription>
+      <imports>
+        <import name="descriptors.type_system.ProcessedModel"/>
+      </imports>
+    </typeSystemDescription>
     <typePriorities/>
     <fsIndexCollection/>
     <capabilities>
       <capability>
         <inputs/>
-        <outputs/>
+        <outputs>
+          <type allAnnotatorFeatures="true">ProcessedModel</type>
+        </outputs>
         <languagesSupported>
           <language>en</language>
         </languagesSupported>
