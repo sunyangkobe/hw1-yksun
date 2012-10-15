@@ -139,7 +139,7 @@ public class SimpleRunCPE extends Thread {
      * 
      */
     public void batchProcessComplete() {
-      System.out.print("Completed " + entityCount + " documents");
+      System.out.print("Completed " + entityCount + " lines");
       if (size > 0) {
         System.out.print("; " + size + " characters");
       }
@@ -155,7 +155,7 @@ public class SimpleRunCPE extends Thread {
      */
     public void collectionProcessComplete() {
       long time = System.currentTimeMillis();
-      System.out.print("Completed " + entityCount + " documents");
+      System.out.print("Completed " + entityCount + " lines");
       if (size > 0) {
         System.out.print("; " + size + " characters");
       }
