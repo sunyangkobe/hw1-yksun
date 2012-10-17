@@ -7,6 +7,7 @@ import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import com.aliasi.chunk.Chunk;
@@ -16,7 +17,7 @@ import com.aliasi.util.AbstractExternalizable;
 /**
  * Position, TagName Annotator
  * 
- * @author Yang Sun <yksun@cs.cmu.edu>
+ * @author <a href="mailto:yksun@cs.cmu.edu">Yang Sun</a>
  * 
  */
 public class PosTagNamedEntityRecognizer extends JCasAnnotator_ImplBase {
@@ -33,7 +34,7 @@ public class PosTagNamedEntityRecognizer extends JCasAnnotator_ImplBase {
   /**
    * Name of configuration parameter that must be set to the Confidence Acceptance Level.
    */
-  public static final String PARAM_CONFIDENCE = "Confidence";
+  public static final String PARAM_THRESHOLD = "Threshold";
 
   private ConfidenceChunker chunker;
 
@@ -41,7 +42,7 @@ public class PosTagNamedEntityRecognizer extends JCasAnnotator_ImplBase {
 
   private int maxN;
 
-  private double conf_tar;
+  private double threshold;
 
   /**
    * @see org.apache.uima.AnalysisComponent.AnalysisComponent#initialize(org.apache.uima.AnalysisComponent.AnalysisComponentContext)
@@ -51,7 +52,7 @@ public class PosTagNamedEntityRecognizer extends JCasAnnotator_ImplBase {
     try {
       String modelPath = (String) aContext.getConfigParameterValue(PARAM_MODELFILE);
       maxN = (Integer) aContext.getConfigParameterValue(PARAM_MAXN);
-      conf_tar = (Float) aContext.getConfigParameterValue(PARAM_CONFIDENCE);
+      threshold = (Float) aContext.getConfigParameterValue(PARAM_THRESHOLD);
       chunker = (ConfidenceChunker) AbstractExternalizable.readObject(new File(modelPath));
     } catch (IOException e) {
       throw new ResourceInitializationException();
@@ -66,8 +67,7 @@ public class PosTagNamedEntityRecognizer extends JCasAnnotator_ImplBase {
   @Override
   public void process(JCas aJCas) throws AnalysisEngineProcessException {
     jcas = aJCas;
-    Iterator<org.apache.uima.jcas.tcas.Annotation> model_iter = aJCas.getAnnotationIndex(
-            SourceModel.type).iterator();
+    Iterator<Annotation> model_iter = aJCas.getAnnotationIndex(SourceModel.type).iterator();
     while (model_iter.hasNext()) {
       produceGeneSpans((SourceModel) model_iter.next());
     }
@@ -121,7 +121,7 @@ public class PosTagNamedEntityRecognizer extends JCasAnnotator_ImplBase {
     while (iter.hasNext()) {
       Chunk chunk = iter.next();
       double conf = Math.pow(2.0, chunk.score());
-      if (conf > conf_tar) {
+      if (conf > threshold) {
         ProcessedModel outputModel = new ProcessedModel(jcas);
         final ArrayList<Integer> spaceList = getSpaceSpans(model.getSentence());
         int numBeginSpaces = getNumSpaces(chunk.start(), spaceList);

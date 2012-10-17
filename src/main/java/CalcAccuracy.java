@@ -8,12 +8,19 @@ import java.util.Scanner;
 /**
  * Internal Use for measuring the correctness
  * 
- * @author Yang Sun <yksun@cs.cmu.edu>
+ * @author <a href="mailto:yksun@cs.cmu.edu">Yang Sun</a>
  * 
  */
 public class CalcAccuracy {
 
+  private int correct;
+
+  private int total;
+
   public CalcAccuracy(String args[]) {
+    total = 0;
+    correct = 0;
+
     File sample = new File(args[0]);
     File mine = new File(args[1]);
 
@@ -21,45 +28,25 @@ public class CalcAccuracy {
     Map<String, ArrayList<String>> mineMap = addToMap(mine);
 
     double correctness = calcRate(sampleMap, mineMap);
+    System.out.println("Correct Number: " + correct);
+    System.out.println("Total Number: " + total);
     System.out.println("The correctness rate is " + correctness + "%");
   }
 
   private double calcRate(Map<String, ArrayList<String>> sampleMap,
           Map<String, ArrayList<String>> mineMap) {
-    int correct = 0;
-    int total = 0;
-
-    for (String key : sampleMap.keySet()) {
-      if (!mineMap.containsKey(key)) {
-        total += sampleMap.get(key).size();
-      } else {
-        for (String val : sampleMap.get(key)) {
-          if (mineMap.get(key).contains(val)) {
+    for (String key : sampleMap.keySet())
+      if (mineMap.containsKey(key))
+        for (String val : sampleMap.get(key))
+          if (mineMap.get(key).contains(val))
             correct++;
-            total++;
-          } else {
-            total++;
-          }
-        }
-      }
-    }
 
-    for (String key : mineMap.keySet()) {
-      if (!sampleMap.containsKey(key)) {
-        total += mineMap.get(key).size();
-      } else {
-        for (String val : mineMap.get(key)) {
-          if (sampleMap.get(key).contains(val)) {
+    for (String key : mineMap.keySet())
+      if (sampleMap.containsKey(key))
+        for (String val : mineMap.get(key))
+          if (sampleMap.get(key).contains(val))
             correct++;
-            total++;
-          } else {
-            total++;
-          }
-        }
-      }
-    }
-    System.out.println("Correct Number: " + correct);
-    System.out.println("Total Number: " + total);
+
     return correct * 100.0 / total;
   }
 
@@ -73,6 +60,7 @@ public class CalcAccuracy {
           m.put(valueSplitted[0], new ArrayList<String>());
         }
         m.get(valueSplitted[0]).add(valueSplitted[1]);
+        total++;
       }
     } catch (FileNotFoundException e) {
       e.printStackTrace();

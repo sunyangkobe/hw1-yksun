@@ -17,7 +17,7 @@ import org.apache.uima.util.ProcessTrace;
 /**
  * Annotation Printer
  * 
- * @author Yang Sun <yksun@cs.cmu.edu>
+ * @author <a href="mailto:yksun@cs.cmu.edu">Yang Sun</a>
  * 
  */
 public class AnnotationPrinter_Impl extends CasConsumer_ImplBase implements CasObjectProcessor {

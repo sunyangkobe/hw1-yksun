@@ -22,7 +22,7 @@
         <mandatory>false</mandatory>
       </configurationParameter>
       <configurationParameter>
-        <name>Confidence</name>
+        <name>Threshold</name>
         <type>Float</type>
         <multiValued>false</multiValued>
         <mandatory>false</mandatory>
@@ -42,7 +42,7 @@
         </value>
       </nameValuePair>
       <nameValuePair>
-        <name>Confidence</name>
+        <name>Threshold</name>
         <value>
           <float>0.65</float>
         </value>

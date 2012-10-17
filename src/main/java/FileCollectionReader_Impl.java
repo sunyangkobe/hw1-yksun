@@ -14,7 +14,7 @@ import org.apache.uima.util.Progress;
 /**
  * File Collection Reader
  * 
- * @author Yang Sun <yksun@cs.cmu.edu>
+ * @author <a href="mailto:yksun@cs.cmu.edu">Yang Sun</a>
  * 
  */
 public class FileCollectionReader_Impl extends CollectionReader_ImplBase {
@@ -32,7 +32,7 @@ public class FileCollectionReader_Impl extends CollectionReader_ImplBase {
     try {
       scanner = new Scanner(new File(((String) getConfigParameterValue(PARAM_INPUTFILE)).trim()));
     } catch (FileNotFoundException e) {
-      e.printStackTrace();
+      throw new ResourceInitializationException();
     }
   }
 
