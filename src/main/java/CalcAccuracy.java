@@ -8,7 +8,7 @@ import java.util.Scanner;
 /**
  * Internal Use for measuring the correctness
  * 
- * @author Yang Sun
+ * @author Yang Sun <yksun@cs.cmu.edu>
  * 
  */
 public class CalcAccuracy {
@@ -21,13 +21,13 @@ public class CalcAccuracy {
     Map<String, ArrayList<String>> mineMap = addToMap(mine);
 
     double correctness = calcRate(sampleMap, mineMap);
-    System.out.println("The correctness rate is " + correctness);
+    System.out.println("The correctness rate is " + correctness + "%");
   }
 
   private double calcRate(Map<String, ArrayList<String>> sampleMap,
           Map<String, ArrayList<String>> mineMap) {
-    double correct = 0.0;
-    double total = 0.0;
+    int correct = 0;
+    int total = 0;
 
     for (String key : sampleMap.keySet()) {
       if (!mineMap.containsKey(key)) {
@@ -60,7 +60,7 @@ public class CalcAccuracy {
     }
     System.out.println("Correct Number: " + correct);
     System.out.println("Total Number: " + total);
-    return correct / total;
+    return correct * 100.0 / total;
   }
 
   private Map<String, ArrayList<String>> addToMap(File file) {
