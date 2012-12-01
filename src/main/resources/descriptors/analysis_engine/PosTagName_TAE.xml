@@ -30,12 +30,6 @@
     </configurationParameters>
     <configurationParameterSettings>
       <nameValuePair>
-        <name>ModelFile</name>
-        <value>
-          <string>src/main/resources/models/ne-en-bio-genetag.HmmChunker</string>
-        </value>
-      </nameValuePair>
-      <nameValuePair>
         <name>MAX_N_BEST_CHUNKS</name>
         <value>
           <integer>100</integer>
@@ -72,5 +66,21 @@
       <outputsNewCASes>false</outputsNewCASes>
     </operationalProperties>
   </analysisEngineMetaData>
-  <resourceManagerConfiguration/>
+  <resourceManagerConfiguration>
+    <externalResources>
+      <externalResource>
+        <name>LingPipeModelFile</name>
+        <description>Lingpipe Model file for gene recognition.</description>
+        <fileResourceSpecifier>
+          <fileUrl>file:models/ne-en-bio-genetag.HmmChunker</fileUrl>
+        </fileResourceSpecifier>
+      </externalResource>
+    </externalResources>
+    <externalResourceBindings>
+      <externalResourceBinding>
+        <key>LingPipeModel</key>
+        <resourceName>LingPipeModelFile</resourceName>
+      </externalResourceBinding>
+    </externalResourceBindings>
+  </resourceManagerConfiguration>
 </analysisEngineDescription>

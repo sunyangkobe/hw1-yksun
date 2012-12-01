@@ -8,6 +8,7 @@ import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
+import org.apache.uima.resource.ResourceAccessException;
 import org.apache.uima.resource.ResourceInitializationException;
 
 import com.aliasi.chunk.Chunk;
@@ -21,11 +22,6 @@ import com.aliasi.util.AbstractExternalizable;
  * 
  */
 public class PosTagNamedEntityRecognizer extends JCasAnnotator_ImplBase {
-  /**
-   * Name of configuration parameter that must be set to the path of the model file.
-   */
-  public static final String PARAM_MODELFILE = "ModelFile";
-
   /**
    * Name of configuration parameter that must be set to the Maximum N Best Chunks.
    */
@@ -49,14 +45,17 @@ public class PosTagNamedEntityRecognizer extends JCasAnnotator_ImplBase {
    */
   @Override
   public void initialize(UimaContext aContext) throws ResourceInitializationException {
+    super.initialize(aContext);
     try {
-      String modelPath = (String) aContext.getConfigParameterValue(PARAM_MODELFILE);
       maxN = (Integer) aContext.getConfigParameterValue(PARAM_MAXN);
       threshold = (Float) aContext.getConfigParameterValue(PARAM_THRESHOLD);
-      chunker = (ConfidenceChunker) AbstractExternalizable.readObject(new File(modelPath));
+      chunker = (ConfidenceChunker) AbstractExternalizable.readObject(new File(getContext()
+              .getResourceFilePath("LingPipeModel")));
     } catch (IOException e) {
       throw new ResourceInitializationException();
     } catch (ClassNotFoundException e) {
+      throw new ResourceInitializationException();
+    } catch (ResourceAccessException e) {
       throw new ResourceInitializationException();
     }
   }
